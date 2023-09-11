@@ -53,40 +53,6 @@ spec:
           }
         }
       }
-    }
-    stage('Deploy to UAT') {
-      steps {
-        input message:'Approve deployment to UAT?'
-        container('tools') {
-          dir("gitops-k8s-apps") {
-            sh "cd ./hello/uat && kustomize edit set image brainupgrade/hello:${env.GIT_COMMIT}"
-            sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
-          }
-        }
-      }
-    }
-
-    stage('Deploy to Prod') {
-      steps {
-        input message:'Approve deployment to PROD?'
-        container('tools') {
-          dir("gitops-k8s-apps") {
-            sh "cd ./hello/prod && kustomize edit set image brainupgrade/hello:${env.GIT_COMMIT}"
-            sh "git commit -am 'Publish new version' && git push || echo 'no changes'"
-          }
-        }
-      }
-    }
-    stage('final') {
-      steps {
-        container('docker') {
-          withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-            sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-            sh "docker tag brainupgrade/hello:${env.GIT_COMMIT} brainupgrade/hello:latest"
-            sh "docker push brainupgrade/hello:latest"
-          }
-        }
-      }
     }  
   }
 }
