@@ -56,4 +56,5 @@ func hello(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Environment: %s\n", environment)
 	fmt.Fprintf(w, "Hello from mtvlabcicda1 20230921-2315\n")
 	fmt.Fprintf(w, "Hello from mtvlabcicdu20 20230922-2315\n")
+	fmt.Fprintf(w, "Hello from mtvlabcicdu1 20230922-1210\n")
 }
