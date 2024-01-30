@@ -1,6 +1,16 @@
 {
     "name": "Go App - Hello (GitOps App)",
-    "image": "mcr.microsoft.com/devcontainers/go",
+    // "image": "mcr.microsoft.com/devcontainers/go",
+    "image":"mcr.microsoft.com/devcontainers/base:ubuntu",
+    "features": {
+        "ghcr.io/devcontainers/features/go:1": {
+            "version": "1.18"
+        },
+        "ghcr.io/devcontainers/features/docker-in-docker:1": {
+            "version": "latest",
+            "moby": true
+        }
+    },
 
     "customizations": {
         // Configure properties specific to VS Code.
@@ -12,7 +22,9 @@
             "extensions": [
                 "ms-azuretools.vscode-docker",
                 "recode4dev.jenkinsfile",
-                "golang.Go"
+                "golang.Go",
+                "ritwickdey.LiveServer",    // Live Server for web development
+                "mhutchie.git-graph"
             ]
         },
         "codespaces": {
