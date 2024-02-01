@@ -1,16 +1,8 @@
 pipeline {
   agent any
 
-  tools {
-    maven 'mvn'
-  }
 
   stages {
-    stage('Build App') {
-      steps {
-        sh 'mvn package'
-      }
-    }
     
     stage('Build Image') {
       steps {
