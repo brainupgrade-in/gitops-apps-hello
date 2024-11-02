@@ -5,6 +5,7 @@ pool:
   name: selfhosted
 
 variables:
+  dockerRegistryServiceConnection: 'docker-hub-credentials'
   dockerImageName: 'brainupgrade/gitops-apps-hello'
   dockerImageTag: '$(Build.BuildId)'
   trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
@@ -44,5 +45,5 @@ steps:
     command: 'push'
     repository: '$(imageRepository)'
     dockerfile: '**/Dockerfile'
-    containerRegistry: '$(docker-hub-credentials)'
+    containerRegistry: '$(dockerRegistryServiceConnection)'
     tags: '$(dockerImageTag),latest'    
