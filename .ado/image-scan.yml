@@ -31,6 +31,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      trivy image --download-db-only
       trivy image --severity HIGH,CRITICAL --format template --template '@html.tpl' --output image-cve.html $(dockerImageName):latest
 
 - task: PublishBuildArtifacts@1
