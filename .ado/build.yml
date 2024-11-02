@@ -1,8 +1,9 @@
 parameters:
-  - name: dockerImageName
+  - name: 'dockerImageName'
     type: string
     default: 'brainupgrade/gitops-apps-hello'  
    
+trigger: none
 
 stages:
 - stage: BuildTestPush
