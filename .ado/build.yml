@@ -20,7 +20,7 @@ stages:
         command: 'build'
         repository: '$(parameters.dockerImageName)'
         dockerfile: '**/Dockerfile'
-        tags: '$(dockerImageTag),latest'    
+        tags: '$(Build.SourceVersion),latest'    
 
     - task: Bash@3
       displayName: 'Download Trivy HTML Template'
@@ -50,4 +50,4 @@ stages:
         repository: '$(parameters.dockerImageName)'
         dockerfile: '**/Dockerfile'
         containerRegistry: 'docker-hub-credentials'
-        tags: '$(dockerImageTag),latest'    
+        tags: '$(Build.SourceVersion),latest'    
