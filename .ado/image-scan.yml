@@ -1,0 +1,48 @@
+trigger: none
+
+pool:
+  # vmImage: 'ubuntu-latest'
+  name: selfhosted
+
+variables:
+  dockerImageName: 'brainupgrade/gitops-apps-hello'
+  dockerImageTag: '$(Build.BuildId)'
+  trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
+
+steps:
+- task: Docker@2
+  displayName: 'Docker Build'
+  inputs:
+    command: 'build'
+    repository: '$(imageRepository)'
+    dockerfile: '**/Dockerfile'
+    tags: '$(dockerImageTag),latest'    
+
+- task: Bash@3
+  displayName: 'Download Trivy HTML Template'
+  inputs:
+    targetType: 'inline'
+    script: |
+      wget $(trivyTemplateUrl) -O html.tpl
+
+- task: Bash@3
+  displayName: 'Run Trivy Image Scan'
+  inputs:
+    targetType: 'inline'
+    script: |
+      trivy image --severity HIGH,CRITICAL --format template --template '@html.tpl' --output image-cve.html $(dockerImageName):latest
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Trivy Image Scan Report'
+  inputs:
+    pathToPublish: 'image-cve.html'
+    artifactName: 'Trivy-Image-Scan-Report'
+    publishLocation: 'Container'
+- task: Docker@2
+  displayName: 'Docker Push'
+  inputs:
+    command: 'push'
+    repository: '$(imageRepository)'
+    dockerfile: '**/Dockerfile'
+    containerRegistry: '$(dockerRegistryServiceConnection)'
+    tags: '$(dockerImageTag),latest'    
