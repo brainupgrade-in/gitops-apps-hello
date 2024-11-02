@@ -10,7 +10,7 @@ parameters:
   dockerImageTag: '$(Build.SourceVersion)'
   trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
 
-
+stages:
 - stage: BuildTestPush
   displayName: "Build and Push Docker Image"
   jobs:
