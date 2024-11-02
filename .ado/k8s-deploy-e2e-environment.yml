@@ -41,6 +41,7 @@ stages:
                   kubectl expose deployment hello-e2e --port=8080 --target-port=8080 
                 else
                   kubectl set image deployment hello-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
+                  kubectl set env deployment hello-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
                 fi
           - task: Bash@3
             displayName: "Verify Deployment"
