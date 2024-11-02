@@ -1,4 +1,12 @@
-trigger: none
+# Effective way to disable pipeline without using UI
+trigger:
+  branches:
+    exclude:
+      - '*'  # Don't Trigger on branches
+pr:
+  branches:
+    exclude:
+      - '*'  # Don't trigger on PR
 
 pool:
   # vmImage: 'ubuntu-latest'
