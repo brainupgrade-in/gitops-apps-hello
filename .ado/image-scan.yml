@@ -24,7 +24,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      curl $(trivyTemplateUrl) -O html.tpl
+      curl -LO $(trivyTemplateUrl) 
 
 - task: Bash@3
   displayName: 'Run Trivy Image Scan'
