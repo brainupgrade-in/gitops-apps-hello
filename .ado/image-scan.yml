@@ -44,5 +44,5 @@ steps:
     command: 'push'
     repository: '$(imageRepository)'
     dockerfile: '**/Dockerfile'
-    containerRegistry: '$(dockerRegistryServiceConnection)'
+    containerRegistry: '$(docker-hub-credentials)'
     tags: '$(dockerImageTag),latest'    
