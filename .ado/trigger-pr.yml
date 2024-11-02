@@ -1,0 +1,19 @@
+trigger:
+  branches:
+    exclude:
+      - '*'  # Prevent regular push triggers
+
+pr:
+  branches:
+    include:
+      - main  # Trigger on pull request to main branch
+
+pool:
+  # vmImage: 'ubuntu-latest'
+  name: selfhosted
+
+stages:
+- template: build.yml
+  parameters:
+    dockerRegistryServiceConnection: 'docker-hub-credentials'
+    dockerImageName: 'brainupgrade/gitops-apps-hello'    
