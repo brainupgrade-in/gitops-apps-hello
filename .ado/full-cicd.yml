@@ -64,6 +64,8 @@ stages:
     strategy:
       runOnce:
         deploy:
+          variables:
+            environmentName: 'e2e'
           steps:
           - task: Bash@3
             displayName: 'Check and Deploy to Kubernetes E2E Environment'
@@ -95,6 +97,8 @@ stages:
     strategy:
       runOnce:
         deploy:
+          variables:
+            environmentName: 'uat'        
           steps:
           - task: Bash@3
             displayName: 'Check and Deploy to Kubernetes UAT Environment'
