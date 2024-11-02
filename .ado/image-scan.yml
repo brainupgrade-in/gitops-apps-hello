@@ -32,7 +32,7 @@ steps:
     targetType: 'inline'
     script: |
       trivy image --download-db-only
-      trivy image --severity HIGH,CRITICAL --format template --template '@html.tpl' --output image-cve.html $(dockerImageName):latest
+      trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html $(dockerImageName):latest
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Trivy Image Scan Report'
