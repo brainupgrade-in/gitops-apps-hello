@@ -15,8 +15,8 @@ stages:
 - template: deploy-environment.yml
   parameters:
     environment: 'e2e'
-    appName: '$(appName)'    
+    appName: '${{variables.appName}}'    
 - template: deploy-environment.yml
   parameters:
     environment: 'uat'
-    appName: '$(appName)'
+    appName: '${{variables.appName}}'
