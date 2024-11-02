@@ -16,4 +16,4 @@ stages:
   - template: build.yaml
     parameters:
       dockerImageName: 'brainupgrade/gitops-apps-hello'
-      dockerRegistryServiceConnection: 'docker-hub-credentials'
+      # dockerRegistryServiceConnection: 'docker-hub-credentials'

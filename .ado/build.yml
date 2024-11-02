@@ -1,4 +1,3 @@
-
 parameters:
   dockerRegistryServiceConnection: 'docker-hub-credentials'
   dockerImageName: 'brainupgrade/gitops-apps-hello'
