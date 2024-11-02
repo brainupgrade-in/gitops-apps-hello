@@ -22,7 +22,7 @@ stages:
               script: |
                 if ! kubectl get deployment hello-e2e ; then
                   echo "Deployment not found, deploying now..."
-                  kubectl create deploy hello --image=brainupgrade/gitops-apps-hello:$(Build.BuildId) 
+                  kubectl create deploy hello-e2e --image=brainupgrade/gitops-apps-hello:$(Build.BuildId) 
                   kubectl set env deployment hello-e2e ENVIRONMENT=e2e  
                   kubectl expose deployment hello-e2e --port=8080 --target-port=8080 
                 else
