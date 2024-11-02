@@ -1,0 +1,43 @@
+parameters:
+  - name: 'environment'
+    type: string
+    default: 'e2e'  
+  - name: 'appName'
+    type: string
+    default: 'hello'  
+stages:
+- stage: '${{parameters.environment}}'
+  displayName: '${{parameters.environment}} Deployment'
+  jobs:
+  - deployment: 'DeployTo${{parameters.environment}}'
+    displayName: 'Deploy to ${{parameters.environment}} Environment'
+    environment: '${{parameters.environment}}'
+    variables:
+      environmentName: '${{parameters.environment}}'
+      appName: '${{parameters.appName}}'
+      dockerImageTag: '$(Build.SourceVersion)'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            displayName: 'Check and Deploy to Kubernetes ${{parameters.environment}} Environment'
+            inputs:
+              targetType: 'inline'
+              script: |
+                if ! kubectl get deployment $(appName)-$(environmentName) ; then
+                  echo "Deployment not found, deploying now..."
+                  kubectl create deploy $(appName)-$(environmentName) --image=$(dockerImageName):$(dockerImageTag) 
+                  kubectl set env deployment $(appName)-$(environmentName) ENVIRONMENT=$(environmentName) BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(dockerImageTag)
+                  kubectl expose deployment $(appName)-$(environmentName) --port=8080 --target-port=8080 
+                else
+                  kubectl set image deployment $(appName)-$(environmentName) gitops-apps-hello=$(dockerImageName):$(dockerImageTag) 
+                  kubectl set env deployment $(appName)-$(environmentName) ENVIRONMENT=$(environmentName) BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(dockerImageTag)
+                fi
+          - task: Bash@3
+            displayName: "Verify Deployment"
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "Verifying the deployment..."
+                kubectl get deploy -owide -l app=$(appName)-$(environmentName)
