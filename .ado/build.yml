@@ -1,8 +1,10 @@
-parameters:
+variables:
   dockerRegistryServiceConnection: 'docker-hub-credentials'
-  dockerImageName: 'brainupgrade/gitops-apps-hello'
   dockerImageTag: '$(Build.SourceVersion)'
   trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
+
+parameters:
+  dockerImageName: 'brainupgrade/gitops-apps-hello'
 
 stages:
 - stage: BuildTestPush

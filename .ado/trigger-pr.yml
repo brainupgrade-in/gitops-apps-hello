@@ -13,7 +13,7 @@ pool:
   name: selfhosted
 
 stages:
-  - template: build.yaml
+  - template: build.yml
     parameters:
       dockerImageName: 'brainupgrade/gitops-apps-hello'
       # dockerRegistryServiceConnection: 'docker-hub-credentials'
