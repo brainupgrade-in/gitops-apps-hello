@@ -1,10 +1,12 @@
 variables:
-  dockerRegistryServiceConnection: 'docker-hub-credentials'
   dockerImageTag: '$(Build.SourceVersion)'
+  dockerRegistryServiceConnection: 'docker-hub-credentials'
   trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
 
 parameters:
-  dockerImageName: 'brainupgrade/gitops-apps-hello'
+  - name: dockerImageName
+    type: string
+    default: 'brainupgrade/gitops-apps-hello'  
 
 stages:
 - stage: BuildTestPush
@@ -17,7 +19,7 @@ stages:
       displayName: 'Docker Build'
       inputs:
         command: 'build'
-        repository: '$(dockerImageName)'
+        repository: '$(parameters.dockerImageName)'
         dockerfile: '**/Dockerfile'
         tags: '$(dockerImageTag),latest'    
 
@@ -34,7 +36,7 @@ stages:
         targetType: 'inline'
         script: |
           trivy image --download-db-only
-          trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html $(dockerImageName):latest
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html $(parameters.dockerImageName):latest
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Trivy Image Scan Report'
@@ -46,7 +48,7 @@ stages:
       displayName: 'Docker Push'
       inputs:
         command: 'push'
-        repository: '$(dockerImageName)'
+        repository: '$(parameters.dockerImageName)'
         dockerfile: '**/Dockerfile'
         containerRegistry: '$(dockerRegistryServiceConnection)'
         tags: '$(dockerImageTag),latest'    
