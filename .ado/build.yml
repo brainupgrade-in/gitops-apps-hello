@@ -18,7 +18,7 @@ stages:
       displayName: 'Docker Build'
       inputs:
         command: 'build'
-        repository: '$(parameters.dockerImageName)'
+        repository: '${{ parameters.dockerImageName }}'
         dockerfile: '**/Dockerfile'
         tags: '$(Build.SourceVersion),latest'    
 
@@ -35,7 +35,7 @@ stages:
         targetType: 'inline'
         script: |
           trivy image --download-db-only
-          trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html $(parameters.dockerImageName):latest
+          trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html ${{ parameters.dockerImageName }}:latest
 
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Trivy Image Scan Report'
@@ -47,7 +47,7 @@ stages:
       displayName: 'Docker Push'
       inputs:
         command: 'push'
-        repository: '$(parameters.dockerImageName)'
+        repository: '${{ parameters.dockerImageName }}'
         dockerfile: '**/Dockerfile'
         containerRegistry: 'docker-hub-credentials'
         tags: '$(Build.SourceVersion),latest'    
