@@ -1,8 +1,3 @@
-variables:
-  dockerImageTag: '$(Build.SourceVersion)'
-  dockerRegistryServiceConnection: 'docker-hub-credentials'
-  trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'
-
 parameters:
   - name: dockerImageName
     type: string
@@ -14,7 +9,10 @@ stages:
   jobs:
   - job: BuildAndPushImage
     displayName: "Build and Push Docker Image"
-    steps:
+    variables:
+      dockerImageTag: '$(Build.SourceVersion)'
+      dockerRegistryServiceConnection: 'docker-hub-credentials'
+      trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'    steps:
     - task: Docker@2
       displayName: 'Docker Build'
       inputs:
