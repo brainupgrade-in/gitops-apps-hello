@@ -8,7 +8,7 @@ trigger:
 pr:
   branches:
     exclude:
-      - *  # Don't trigger on PR
+      - '*'  # Don't trigger on PR
 
 pool:
   # vmImage: 'ubuntu-latest'
