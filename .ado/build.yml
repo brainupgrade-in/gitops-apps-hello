@@ -2,6 +2,10 @@ parameters:
   - name: dockerImageName
     type: string
     default: 'brainupgrade/gitops-apps-hello'  
+variables:
+  dockerImageTag: '$(Build.SourceVersion)'
+  dockerRegistryServiceConnection: 'docker-hub-credentials'
+  trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'    
 
 stages:
 - stage: BuildTestPush
@@ -9,10 +13,7 @@ stages:
   jobs:
   - job: BuildAndPushImage
     displayName: "Build and Push Docker Image"
-    variables:
-      dockerImageTag: '$(Build.SourceVersion)'
-      dockerRegistryServiceConnection: 'docker-hub-credentials'
-      trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'    steps:
+    steps:
     - task: Docker@2
       displayName: 'Docker Build'
       inputs:
