@@ -5,6 +5,31 @@ pool:
   name: selfhosted
 
 stages:
+- stage: Build
+  displayName: "Build and Push Docker Image"
+  jobs:
+  - job: BuildImage
+    displayName: "Build Docker Image"
+    steps:
+    - task: Docker@2
+      displayName: 'Docker Build'
+      inputs:
+        command: 'build'
+        repository: 'brainupgrade/gitops-apps-hello'
+        dockerfile: '**/Dockerfile'
+        arguments: --build-arg='BUILD_ID=$(Build.BuildId)' --build-arg='GIT_COMMIT_ID=$(Build.SourceVersion)'
+        tags: '$(Build.SourceVersion),latest'
+  - job: PushDockerImage
+    displayName: "Push Docker Image"
+    steps:
+    - task: Docker@2
+      displayName: 'Docker Push'
+      inputs:
+        command: 'push'
+        repository: 'brainupgrade/gitops-apps-hello'
+        dockerfile: '**/Dockerfile'
+        containerRegistry: 'docker-hub-credentials'
+        tags: '$(Build.SourceVersion),latest'
 - stage: e2e
   displayName: "E2E Deployment"
   jobs:
@@ -22,11 +47,11 @@ stages:
               script: |
                 if ! kubectl get deployment hello-e2e ; then
                   echo "Deployment not found, deploying now..."
-                  kubectl create deploy hello-e2e --image=brainupgrade/gitops-apps-hello:$(Build.BuildId) 
-                  kubectl set env deployment hello-e2e ENVIRONMENT=e2e  
+                  kubectl create deploy hello-e2e --image=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
+                  kubectl set env deployment hello-e2e ENVIRONMENT=e2e 
                   kubectl expose deployment hello-e2e --port=8080 --target-port=8080 
                 else
-                  kubectl set image deployment hello-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.BuildId) 
+                  kubectl set image deployment hello-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
                 fi
           - task: Bash@3
             displayName: "Verify Deployment"
@@ -34,4 +59,4 @@ stages:
               targetType: 'inline'
               script: |
                 echo "Verifying the deployment..."
-                kubectl get pods -l app=hello-e2e
+                kubectl get deploy -owide -l app=hello-e2e
