@@ -5,6 +5,9 @@ parameters:
   - name: 'appName'
     type: string
     default: 'hello'  
+  - name: 'dockerImageName'
+    type: string
+    default: 'brainupgrade/gitops-apps-hello'
 stages:
 - stage: '${{parameters.environment}}'
   displayName: '${{parameters.environment}} Deployment'
@@ -15,6 +18,7 @@ stages:
     variables:
       environmentName: '${{parameters.environment}}'
       appName: '${{parameters.appName}}'
+      dockerImageName: '${{parameters.dockerImageName}}'
       dockerImageTag: '$(Build.SourceVersion)'
     strategy:
       runOnce:
