@@ -42,14 +42,14 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                if ! kubectl get deployment hello-e2e ; then
+                if ! kubectl get deployment app-e2e ; then
                   echo "Deployment not found, deploying now..."
-                  kubectl create deploy hello-e2e --image=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
-                  kubectl set env deployment hello-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
-                  kubectl expose deployment hello-e2e --port=8080 --target-port=8080 
+                  kubectl create deploy app-e2e --image=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
+                  kubectl set env deployment app-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
+                  kubectl expose deployment app-e2e --port=8080 --target-port=8080 
                 else
-                  kubectl set image deployment hello-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
-                  kubectl set env deployment hello-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
+                  kubectl set image deployment app-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
+                  kubectl set env deployment app-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
                 fi
           - task: Bash@3
             displayName: "Verify Deployment"
@@ -57,4 +57,4 @@ stages:
               targetType: 'inline'
               script: |
                 echo "Verifying the deployment..."
-                kubectl get deploy -owide -l app=hello-e2e
+                kubectl get deploy -owide -l app=app-e2e
