@@ -46,7 +46,7 @@ stages:
                   echo "Deployment not found, deploying now..."
                   kubectl create deploy app-e2e --image=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
                   kubectl set env deployment app-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
-                  kubectl expose deployment app-e2e --port=8080 --target-port=8080 
+                  kubectl expose deployment app-e2e --port=80 --target-port=8080 
                 else
                   kubectl set image deployment app-e2e gitops-apps-hello=brainupgrade/gitops-apps-hello:$(Build.SourceVersion) 
                   kubectl set env deployment app-e2e ENVIRONMENT=e2e BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(Build.SourceVersion)
