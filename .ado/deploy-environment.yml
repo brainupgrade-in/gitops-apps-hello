@@ -33,7 +33,7 @@ stages:
                   echo "Deployment not found, deploying now..."
                   kubectl create deploy $(appName)-$(environmentName) --image=$(dockerImageName):$(dockerImageTag) 
                   kubectl set env deployment $(appName)-$(environmentName) ENVIRONMENT=$(environmentName) BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(dockerImageTag)
-                  kubectl expose deployment $(appName)-$(environmentName) --port=8080 --target-port=8080 
+                  kubectl expose deployment $(appName)-$(environmentName) --port=80 --target-port=8080 
                 else
                   kubectl set image deployment $(appName)-$(environmentName) gitops-apps-hello=$(dockerImageName):$(dockerImageTag) 
                   kubectl set env deployment $(appName)-$(environmentName) ENVIRONMENT=$(environmentName) BUILD_ID=$(Build.BuildId) GIT_COMMIT_ID=$(dockerImageTag)
