@@ -9,8 +9,8 @@ pr:
       - "*" # Don't trigger on PR
 
 pool:
-  vmImage: "ubuntu-latest"
-  # name: selfhosted
+  # vmImage: "ubuntu-latest"
+  name: selfhosted
 
 variables:
   dockerRegistryServiceConnection: "docker-hub-credentials"
