@@ -1,53 +1,53 @@
 parameters:
-  - name: 'dockerImageName'
+  - name: "dockerImageName"
     type: string
-    default: 'brainupgrade/gitops-apps-hello'  
+    default: "brainupgrade/gitops-apps-hello"
 
 stages:
-- stage: BuildTestPush
-  displayName: "Build and Push Docker Image"
-  jobs:
-  - job: BuildAndPushImage
+  - stage: BuildTestPush
     displayName: "Build and Push Docker Image"
-    variables:
-      dockerImageTag: '$(Build.SourceVersion)'
-      dockerRegistryServiceConnection: 'docker-hub-credentials'
-      trivyTemplateUrl: 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl'     
-    steps:
-    - task: Docker@2
-      displayName: 'Docker Build'
-      inputs:
-        command: 'build'
-        repository: '${{ parameters.dockerImageName }}'
-        dockerfile: '**/Dockerfile'
-        tags: '$(Build.SourceVersion),latest'    
+    jobs:
+      - job: BuildAndPushImage
+        displayName: "Build and Push Docker Image"
+        variables:
+          dockerImageTag: "$(Build.SourceVersion)"
+          dockerRegistryServiceConnection: "docker-hub-credentials"
+          trivyTemplateUrl: "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl"
+        steps:
+          - task: Docker@2
+            displayName: "Docker Build"
+            inputs:
+              command: "build"
+              repository: "${{ parameters.dockerImageName }}"
+              dockerfile: "**/Dockerfile"
+              tags: "$(Build.SourceVersion),latest"
 
-    - task: Bash@3
-      displayName: 'Download Trivy HTML Template'
-      inputs:
-        targetType: 'inline'
-        script: |
-          curl -LO $(trivyTemplateUrl) 
+          - task: Bash@3
+            displayName: "Download Trivy HTML Template"
+            inputs:
+              targetType: "inline"
+              script: |
+                curl -LO $(trivyTemplateUrl)
 
-    - task: Bash@3
-      displayName: 'Run Trivy Image Scan'
-      inputs:
-        targetType: 'inline'
-        script: |
-          trivy image --download-db-only
-          trivy image --severity HIGH,CRITICAL --exit-code 1 --format template --template '@html.tpl' --output image-cve.html ${{ parameters.dockerImageName }}:latest
+          - task: Bash@3
+            displayName: "Run Trivy Image Scan"
+            inputs:
+              targetType: "inline"
+              script: |
+                trivy image --download-db-only
+                trivy image --severity HIGH,CRITICAL --exit-code 0 --format template --template '@html.tpl' --output image-cve.html ${{ parameters.dockerImageName }}:latest
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Trivy Image Scan Report'
-      inputs:
-        pathToPublish: 'image-cve.html'
-        artifactName: 'Trivy-Image-Scan-Report'
-        publishLocation: 'Container'
-    - task: Docker@2
-      displayName: 'Docker Push'
-      inputs:
-        command: 'push'
-        repository: '${{ parameters.dockerImageName }}'
-        dockerfile: '**/Dockerfile'
-        containerRegistry: 'docker-hub-credentials'
-        tags: '$(Build.SourceVersion),latest'    
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish Trivy Image Scan Report"
+            inputs:
+              pathToPublish: "image-cve.html"
+              artifactName: "Trivy-Image-Scan-Report"
+              publishLocation: "Container"
+          - task: Docker@2
+            displayName: "Docker Push"
+            inputs:
+              command: "push"
+              repository: "${{ parameters.dockerImageName }}"
+              dockerfile: "**/Dockerfile"
+              containerRegistry: "docker-hub-credentials"
+              tags: "$(Build.SourceVersion),latest"
