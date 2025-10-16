@@ -7,7 +7,7 @@ on:
 
 env:
   # Use docker.io for Docker Hub if empty
-  IMAGE_NAME: brainupgrade/gitops-apps-hello    
+  IMAGE_NAME: gunasekar2019/gitops-apps-hello    
 
 jobs:
   build-and-deploy:
@@ -34,4 +34,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: brainupgrade/gitops-apps-hello:${{ env.TAG_NAME }}               
+        tags: gunasekar2019/gitops-apps-hello:${{ env.TAG_NAME }}               
